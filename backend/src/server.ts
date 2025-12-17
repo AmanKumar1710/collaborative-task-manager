@@ -17,7 +17,8 @@ async function bootstrap() {
     origin: [
       "http://localhost:5173",
       "https://collaborative-task-manager-gilt.vercel.app",
-      "https://collaborative-task-manager-mpqgy3cbb-amanakumar1710s-projects.vercel.app"
+      "https://collaborative-task-manager-mpqgy3cbb-amanakumar1710s-projects.vercel.app",
+      "https://collaborative-task-manager-mpqgy3cbb-amankumar1710s-projects.vercel.app",
     ],
     credentials: true,
   })
