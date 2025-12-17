@@ -7,11 +7,14 @@ import {
 } from "../utils/validation/authSchemas";
 import { AuthRequest } from "../middleware/authMiddleware";
 
+const COOKIE_NAME = "token";
+
 function setAuthCookie(res: Response, token: string) {
-  res.cookie("token", token, {
+  res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: false, // set true in production with HTTPS
+    sameSite: "none",   // required for cross-site requests
+    secure: true,       // required when SameSite=None and using HTTPS
+    path: "/",          // send to all routes
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 }
@@ -20,7 +23,9 @@ export const authController = {
   async register(req: AuthRequest, res: Response) {
     const parseResult = registerSchema.safeParse(req.body);
     if (!parseResult.success) {
-      return res.status(400).json({ message: "Validation error", errors: parseResult.error.flatten() });
+      return res
+        .status(400)
+        .json({ message: "Validation error", errors: parseResult.error.flatten() });
     }
 
     try {
@@ -40,7 +45,9 @@ export const authController = {
   async login(req: AuthRequest, res: Response) {
     const parseResult = loginSchema.safeParse(req.body);
     if (!parseResult.success) {
-      return res.status(400).json({ message: "Validation error", errors: parseResult.error.flatten() });
+      return res
+        .status(400)
+        .json({ message: "Validation error", errors: parseResult.error.flatten() });
     }
 
     try {
@@ -79,7 +86,9 @@ export const authController = {
 
     const parseResult = updateProfileSchema.safeParse(req.body);
     if (!parseResult.success) {
-      return res.status(400).json({ message: "Validation error", errors: parseResult.error.flatten() });
+      return res
+        .status(400)
+        .json({ message: "Validation error", errors: parseResult.error.flatten() });
     }
 
     const updated = await authService.updateProfile(req.userId, parseResult.data);
@@ -93,7 +102,12 @@ export const authController = {
   },
 
   async logout(_req: AuthRequest, res: Response) {
-    res.clearCookie("token");
+    res.clearCookie(COOKIE_NAME, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      path: "/",
+    });
     return res.status(204).send();
   },
 };
