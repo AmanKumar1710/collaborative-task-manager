@@ -13,11 +13,15 @@ async function bootstrap() {
   const io = initSocket(httpServer);
 
   app.use(
-    cors({
-      origin: "http://localhost:5173",
-      credentials: true,
-    })
-  );
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://collaborative-task-manager-gilt.vercel.app",
+    ],
+    credentials: true,
+  })
+);
+
   app.use(express.json());
   app.use(cookieParser());
 
