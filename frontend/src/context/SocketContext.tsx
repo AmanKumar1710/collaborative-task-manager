@@ -14,6 +14,9 @@ interface SocketContextValue {
 
 const SocketContext = createContext<SocketContextValue | undefined>(undefined);
 
+const SOCKET_URL =
+  import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+
 export function SocketProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -27,7 +30,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const s = io("http://localhost:5000", {
+    const s = io(SOCKET_URL, {
       withCredentials: true,
     });
 
